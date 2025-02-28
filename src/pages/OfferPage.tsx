@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { motion } from "framer-motion";
+import { Checkbox } from "@/components/ui/checkbox";
 import SignatureCanvas from "../components/SignatureCanvas";
 import Logo from "../components/Logo";
 import offerContent from "../data/offerContent";
@@ -11,6 +12,7 @@ import offerContent from "../data/offerContent";
 const OfferPage = () => {
   const [signatureComplete, setSignatureComplete] = useState(false);
   const [offerAccepted, setOfferAccepted] = useState(false);
+  const [agreeToTerms, setAgreeToTerms] = useState(false);
   const [generatingPdf, setGeneratingPdf] = useState(false);
   const canvasRef = useRef<any>(null);
   const navigate = useNavigate();
@@ -25,6 +27,10 @@ const OfferPage = () => {
   }
 
   const handleAcceptOffer = () => {
+    if (!agreeToTerms) {
+      toast.error("Please agree to the terms and conditions first");
+      return;
+    }
     setOfferAccepted(true);
     toast.success("Offer accepted");
   };
@@ -91,11 +97,14 @@ const OfferPage = () => {
                   </p>
                 </div>
                 <div className="flex-shrink-0">
-                  <img 
-                    src="/placeholder.svg" 
-                    alt="Company Logo" 
-                    className="h-16 w-auto"
-                  />
+                  <div className="flex flex-col items-end">
+                    <img 
+                      src="/lovable-uploads/012024d2-64d0-4ce5-80e3-7da28fc319ed.png" 
+                      alt="Genpact Logo" 
+                      className="h-8 w-auto mb-1"
+                    />
+                    <span className="text-xs text-cyan-500">Transformation Happens Here</span>
+                  </div>
                 </div>
               </div>
               
@@ -111,17 +120,30 @@ const OfferPage = () => {
                 <h2 className="text-xl font-medium text-gray-900 mb-4">Accept Your Offer</h2>
                 
                 <div className="space-y-6">
-                  <div className="flex items-start">
+                  <div className="flex items-start space-x-2">
+                    <Checkbox
+                      id="terms"
+                      checked={agreeToTerms}
+                      onCheckedChange={(checked) => 
+                        setAgreeToTerms(checked as boolean)
+                      }
+                    />
+                    <label
+                      htmlFor="terms"
+                      className="text-sm text-gray-700 leading-none pt-0.5"
+                    >
+                      I have read and agree to the terms and conditions outlined in this offer letter
+                    </label>
+                  </div>
+                  
+                  <div>
                     <Button
                       onClick={handleAcceptOffer}
-                      disabled={offerAccepted}
+                      disabled={offerAccepted || !agreeToTerms}
                       className="mr-4"
                     >
                       {offerAccepted ? "Offer Accepted" : "Accept Offer"}
                     </Button>
-                    <p className="text-sm text-gray-600">
-                      By clicking "Accept Offer", you agree to the terms and conditions outlined in this offer letter.
-                    </p>
                   </div>
                   
                   <div>
@@ -163,7 +185,7 @@ const OfferPage = () => {
       <footer className="w-full py-4 px-6 border-t border-gray-100 mt-auto">
         <div className="max-w-screen-xl mx-auto flex justify-between items-center">
           <p className="text-sm text-gray-500">
-            Powered by <a href="#" className="text-blue-600 hover:underline">Offer Portal</a>
+            Powered by <a href="#" className="text-blue-600 hover:underline">Genpact</a>
           </p>
           <p className="text-sm text-gray-500">
             <a href="#" className="hover:underline">Privacy Policy</a>
