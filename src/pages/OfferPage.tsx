@@ -1,5 +1,5 @@
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
@@ -14,17 +14,21 @@ const OfferPage = () => {
   const [offerAccepted, setOfferAccepted] = useState(false);
   const [agreeToTerms, setAgreeToTerms] = useState(false);
   const [generatingPdf, setGeneratingPdf] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(true);
   const canvasRef = useRef<any>(null);
   const navigate = useNavigate();
 
   // Check if user is authenticated
-  const employeeId = localStorage.getItem("employeeId");
-  
-  if (!employeeId) {
-    navigate("/");
-    toast.error("Please sign in to view your offer");
-    return null;
-  }
+  useEffect(() => {
+    const employeeId = localStorage.getItem("employeeId");
+    if (!employeeId) {
+      setIsAuthenticated(false);
+      toast.error("Please sign in to view your offer");
+      navigate("/");
+    }
+  }, [navigate]);
+
+  const employeeId = localStorage.getItem("employeeId") || "Guest";
 
   const handleAcceptOffer = () => {
     if (!agreeToTerms) {
@@ -67,6 +71,10 @@ const OfferPage = () => {
     navigate("/");
     toast.info("You have been logged out");
   };
+
+  if (!isAuthenticated) {
+    return null;
+  }
 
   return (
     <div className="min-h-screen flex flex-col">
