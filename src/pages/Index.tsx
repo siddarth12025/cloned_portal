@@ -27,9 +27,16 @@ const Index = () => {
     // Simulate authentication delay
     setTimeout(() => {
       setIsLoading(false);
+      
+      // Always store the employeeId (either in localStorage or sessionStorage)
       if (keepSignedIn) {
+        // For persistent login across browser sessions
         localStorage.setItem("employeeId", employeeId);
+      } else {
+        // For temporary login (cleared when browser is closed)
+        sessionStorage.setItem("employeeId", employeeId);
       }
+      
       navigate("/offer");
       toast.success("Successfully logged in");
     }, 1000);

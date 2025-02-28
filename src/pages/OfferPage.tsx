@@ -22,7 +22,7 @@ const OfferPage = () => {
 
   // Check if user is authenticated
   useEffect(() => {
-    const employeeId = localStorage.getItem("employeeId");
+    const employeeId = localStorage.getItem("employeeId") || sessionStorage.getItem("employeeId");
     if (!employeeId) {
       setIsAuthenticated(false);
       toast.error("Please sign in to view your offer");
@@ -30,7 +30,7 @@ const OfferPage = () => {
     }
   }, [navigate]);
 
-  const employeeId = localStorage.getItem("employeeId") || "Guest";
+  const employeeId = localStorage.getItem("employeeId") || sessionStorage.getItem("employeeId") || "Guest";
 
   const handleAcceptOffer = () => {
     if (!agreeToTerms) {
@@ -102,6 +102,7 @@ const OfferPage = () => {
 
   const handleLogout = () => {
     localStorage.removeItem("employeeId");
+    sessionStorage.removeItem("employeeId");
     navigate("/");
     toast.info("You have been logged out");
   };
