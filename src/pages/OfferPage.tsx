@@ -8,6 +8,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import SignatureCanvas from "../components/SignatureCanvas";
 import Logo from "../components/Logo";
 import offerContent from "../data/offerContent";
+import html2pdf from "html2pdf.js";
 
 const OfferPage = () => {
   const [signatureComplete, setSignatureComplete] = useState(false);
@@ -16,6 +17,7 @@ const OfferPage = () => {
   const [generatingPdf, setGeneratingPdf] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(true);
   const canvasRef = useRef<any>(null);
+  const offerContentRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
 
   // Check if user is authenticated
@@ -56,14 +58,46 @@ const OfferPage = () => {
       return;
     }
 
+    if (!offerContentRef.current) {
+      toast.error("Could not generate PDF. Please try again.");
+      return;
+    }
+
     setGeneratingPdf(true);
     
-    // Simulate PDF generation delay
-    setTimeout(() => {
+    // Clone the content to avoid modifying the actual DOM
+    const element = offerContentRef.current.cloneNode(true) as HTMLElement;
+    
+    // Add the signature if available
+    if (canvasRef.current) {
+      const signatureImage = canvasRef.current.toDataURL();
+      const signatureDiv = document.createElement('div');
+      signatureDiv.style.marginTop = '20px';
+      signatureDiv.innerHTML = `
+        <p style="margin-bottom: 5px; font-weight: bold;">Employee Signature:</p>
+        <img src="${signatureImage}" alt="Signature" style="border: 1px solid #ddd; max-width: 300px;" />
+      `;
+      element.appendChild(signatureDiv);
+    }
+
+    // Configure PDF options
+    const options = {
+      margin: [10, 10, 10, 10],
+      filename: `Genpact_Offer_Letter_${employeeId}.pdf`,
+      image: { type: 'jpeg', quality: 0.98 },
+      html2canvas: { scale: 2, useCORS: true },
+      jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+    };
+
+    // Generate PDF
+    html2pdf().from(element).set(options).save().then(() => {
       setGeneratingPdf(false);
       toast.success("Offer letter downloaded successfully");
-      // In a real implementation, we would generate and download the PDF here
-    }, 2000);
+    }).catch((error) => {
+      console.error("PDF generation error:", error);
+      setGeneratingPdf(false);
+      toast.error("Failed to generate PDF. Please try again.");
+    });
   };
 
   const handleLogout = () => {
@@ -93,10 +127,10 @@ const OfferPage = () => {
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
-          className="w-full"
+          className="w-full flex justify-center"
         >
-          <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-            <div className="p-8">
+          <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden w-full lg:w-4/5">
+            <div className="p-8" ref={offerContentRef}>
               <div className="flex justify-between items-start mb-8">
                 <div>
                   <h1 className="text-2xl font-medium text-gray-900">Your Offer Letter</h1>
