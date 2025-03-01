@@ -48,7 +48,7 @@ export const generateOfferLetterPdf = (options: PdfGenerationOptions): Promise<v
       "John Doe",
       "Head of Human Resources, Genpact"
     ];
-    
+
     // Create a clean clone for PDF generation without UI elements
     const element = document.createElement('div');
     element.style.padding = '20px';

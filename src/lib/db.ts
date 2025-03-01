@@ -91,3 +91,11 @@ export const deleteOffer = async (id: string): Promise<void> => {
   if (!db) await initDB();
   await db!.delete(OFFER_STORE, id);
 };
+
+export const clearDatabase = async (): Promise<void> => {
+  if (!db) await initDB();
+  const transaction = db!.transaction([EMPLOYEE_STORE, OFFER_STORE], "readwrite");
+  await transaction.objectStore(EMPLOYEE_STORE).clear();
+  await transaction.objectStore(OFFER_STORE).clear();
+  await transaction.done;
+};

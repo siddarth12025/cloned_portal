@@ -11,7 +11,7 @@ const AdminLogin = () => {
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (!username || !password) {
@@ -21,18 +21,13 @@ const AdminLogin = () => {
 
     setIsLoading(true);
 
-    // Simulate authentication delay
-    setTimeout(() => {
+    try {
+      await login(username, password);
+    } catch (error) {
+      console.error("Login failed:", error);
+    } finally {
       setIsLoading(false);
-
-      // Hardcoded credentials for simplicity
-      if (username === "admin" && password === "password123") {
-        toast.success("Login successful");
-        navigate("/admin-panel");
-      } else {
-        toast.error("Invalid username or password");
-      }
-    }, 1000);
+    }
   };
 
   return (

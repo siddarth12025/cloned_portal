@@ -51,32 +51,45 @@ const EmployeeList: React.FC<EmployeeListProps> = ({
           </tr>
         </thead>
         <tbody>
-          {employees.map((employee) => (
-            <tr key={employee.id} className="border-t">
-              <td className="px-4 py-2 text-sm text-gray-700">{employee.name}</td>
-              <td className="px-4 py-2 text-sm text-gray-700">{employee.position}</td>
-              <td className="px-4 py-2 text-sm text-gray-700">{employee.startDate}</td>
-              <td className="px-4 py-2 text-sm text-gray-700">{employee.location}</td>
-              <td className="px-4 py-2 text-sm text-gray-700">{employee.salary}</td>
-              <td className="px-4 py-2 text-sm text-gray-700">{employee.benefits}</td>
-              <td className="px-4 py-2 text-right text-sm text-gray-700 space-x-2">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => onEdit(employee)}
-                >
-                  Edit
-                </Button>
-                <Button
-                  variant="destructive"
-                  size="sm"
-                  onClick={() => onDelete(employee.id)}
-                >
-                  Delete
-                </Button>
+          {employees.length > 0 ? (
+            employees.map((employee) => (
+              <tr key={employee.id} className="border-t">
+                <td className="px-4 py-2 text-sm text-gray-700">{employee.name}</td>
+                <td className="px-4 py-2 text-sm text-gray-700">{employee.position}</td>
+                <td className="px-4 py-2 text-sm text-gray-700">{employee.startDate}</td>
+                <td className="px-4 py-2 text-sm text-gray-700">{employee.location}</td>
+                <td className="px-4 py-2 text-sm text-gray-700">{employee.salary}</td>
+                <td className="px-4 py-2 text-sm text-gray-700">{employee.benefits}</td>
+                <td className="px-4 py-2 text-right text-sm text-gray-700 space-x-2">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => onEdit(employee)}
+                    aria-label={`Edit ${employee.name}`}
+                  >
+                    Edit
+                  </Button>
+                  <Button
+                    variant="destructive"
+                    size="sm"
+                    onClick={() => onDelete(employee.id)}
+                    aria-label={`Delete ${employee.name}`}
+                  >
+                    Delete
+                  </Button>
+                </td>
+              </tr>
+            ))
+          ) : (
+            <tr>
+              <td
+                colSpan={7}
+                className="px-4 py-2 text-sm text-gray-500 text-center"
+              >
+                No employees found.
               </td>
             </tr>
-          ))}
+          )}
         </tbody>
       </table>
     </div>

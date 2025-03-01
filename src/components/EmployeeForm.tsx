@@ -29,13 +29,13 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({
     handleSubmit,
     formState: { errors, isSubmitting },
   } = useForm<EmployeeFormValues>({
-    defaultValues: initialData || {
-      name: "",
-      position: "",
-      startDate: "",
-      location: "",
-      salary: 0,
-      benefits: "",
+    defaultValues: {
+      name: initialData?.name || "",
+      position: initialData?.position || "",
+      startDate: initialData?.startDate || "",
+      location: initialData?.location || "",
+      salary: initialData?.salary ?? 0,
+      benefits: initialData?.benefits || "",
     },
   });
 
@@ -51,6 +51,7 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({
 
   return (
     <form
+      key={initialData?.id || "new"}
       onSubmit={handleSubmit(onFormSubmit)}
       className="space-y-6 bg-white p-6 rounded-lg shadow-md border border-gray-200"
     >

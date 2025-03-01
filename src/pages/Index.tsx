@@ -24,7 +24,6 @@ const Index = () => {
     
     setIsLoading(true);
     
-    // Simulate authentication delay
     (async () => {
       try {
         const employee = await getEmployee(employeeId);
