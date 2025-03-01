@@ -36,7 +36,7 @@ export const generateOfferLetterPdf = (options: PdfGenerationOptions): Promise<v
     
     const logoDiv = document.createElement('div');
     logoDiv.innerHTML = `
-      <img src="/lovable-uploads/012024d2-64d0-4ce5-80e3-7da28fc319ed.png" alt="Genpact Logo" style="height: 40px; width: auto;" />
+      <img src="https://www.noapteacompaniilor.ro/wp-content/uploads/2022/09/Genpact-logo.jpg" alt="Genpact Logo" style="height: 40px; width: auto;" />
       <div style="font-size: 12px; color: #0891b2; text-align: right;">Transformation Happens Here</div>
     `;
     
@@ -80,7 +80,7 @@ export const generateOfferLetterPdf = (options: PdfGenerationOptions): Promise<v
     centerLogoDiv.style.textAlign = 'center';
     centerLogoDiv.style.margin = '32px 0';
     centerLogoDiv.innerHTML = `
-      <img src="/lovable-uploads/012024d2-64d0-4ce5-80e3-7da28fc319ed.png" alt="Genpact Logo" style="height: 64px; width: auto; margin-bottom: 8px;" />
+      <img src="https://www.noapteacompaniilor.ro/wp-content/uploads/2022/09/Genpact-logo.jpg" alt="Genpact Logo" style="height: 64px; width: auto; margin-bottom: 8px;" />
       <p style="font-size: 14px; color: #0891b2; font-weight: 500;">Transformation Happens Here</p>
     `;
     contentDiv.appendChild(centerLogoDiv);

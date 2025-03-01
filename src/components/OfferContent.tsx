@@ -19,7 +19,7 @@ const OfferContent: React.FC<OfferContentProps> = ({ offerContent, employeeId })
         <div className="flex-shrink-0">
           <div className="flex flex-col items-end">
             <img 
-              src="/lovable-uploads/012024d2-64d0-4ce5-80e3-7da28fc319ed.png" 
+              src="https://www.noapteacompaniilor.ro/wp-content/uploads/2022/09/Genpact-logo.jpg" 
               alt="Genpact Logo" 
               className="h-8 w-auto mb-1"
             />
@@ -57,7 +57,7 @@ const OfferContent: React.FC<OfferContentProps> = ({ offerContent, employeeId })
         <div className="my-8 flex justify-center">
           <div className="text-center">
             <img 
-              src="/lovable-uploads/012024d2-64d0-4ce5-80e3-7da28fc319ed.png" 
+              src="https://www.noapteacompaniilor.ro/wp-content/uploads/2022/09/Genpact-logo.jpg" 
               alt="Genpact Logo" 
               className="h-16 w-auto mx-auto mb-2"
             />

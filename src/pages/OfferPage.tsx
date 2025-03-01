@@ -1,17 +1,15 @@
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { motion } from "framer-motion";
-import SignatureCanvas from "@/components/SignatureCanvas";
 import Logo from "@/components/Logo";
 import offerContent from "@/data/offerContent";
 import OfferContent from "@/components/OfferContent";
 import SignatureSection from "@/components/SignatureSection";
 import OfferActions from "@/components/OfferActions";
 import { generateOfferLetterPdf } from "@/utils/pdfGenerator";
-import { handleSignatureFromCanvas, SignatureMethod } from "@/utils/signatureUtils";
 
 const OfferPage = () => {
   const [signatureComplete, setSignatureComplete] = useState(false);
@@ -20,9 +18,6 @@ const OfferPage = () => {
   const [generatingPdf, setGeneratingPdf] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(true);
   const [signatureImage, setSignatureImage] = useState<string | null>(null);
-  const [signatureMethod, setSignatureMethod] = useState<SignatureMethod>("draw");
-  const canvasRef = useRef<any>(null);
-  const offerContentRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
 
   // Check if user is authenticated
@@ -44,18 +39,6 @@ const OfferPage = () => {
     }
     setOfferAccepted(true);
     toast.success("Offer accepted");
-  };
-
-  const handleSignature = (isComplete: boolean) => {
-    setSignatureComplete(isComplete);
-    // When signature is complete, save the signature image
-    if (isComplete && canvasRef.current) {
-      handleSignatureFromCanvas({
-        canvasRef,
-        setSignatureComplete,
-        setSignatureImage
-      });
-    }
   };
 
   const handleDownloadPdf = () => {
@@ -114,7 +97,7 @@ const OfferPage = () => {
           className="w-full flex justify-center"
         >
           <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden w-full lg:w-4/5">
-            <div className="p-8" ref={offerContentRef}>
+            <div className="p-8">
               {/* Offer content component */}
               <OfferContent 
                 offerContent={offerContent}
@@ -135,18 +118,33 @@ const OfferPage = () => {
                   generatingPdf={generatingPdf}
                 />
                 
-                {/* Signature section component */}
-                <div className="mt-6">
-                  <SignatureSection 
-                    signatureMethod={signatureMethod}
-                    setSignatureMethod={setSignatureMethod}
-                    signatureImage={signatureImage}
-                    signatureComplete={signatureComplete}
-                    setSignatureComplete={setSignatureComplete}
-                    setSignatureImage={setSignatureImage}
-                    handleSignature={handleSignature}
-                  />
-                </div>
+                {/* Signature section component - Only show if offer not yet accepted */}
+                {!offerAccepted ? (
+                  <div className="mt-6">
+                    <SignatureSection 
+                      signatureImage={signatureImage}
+                      signatureComplete={signatureComplete}
+                      setSignatureComplete={setSignatureComplete}
+                      setSignatureImage={setSignatureImage}
+                    />
+                  </div>
+                ) : (
+                  <div className="mt-6 p-4 bg-green-50 border border-green-200 rounded-md">
+                    <p className="text-green-700 font-medium">
+                      You have successfully accepted this offer. You can now download your offer letter.
+                    </p>
+                    {signatureImage && (
+                      <div className="mt-3 border-t border-green-200 pt-3">
+                        <p className="text-sm text-green-600 mb-2">Your signature:</p>
+                        <img 
+                          src={signatureImage} 
+                          alt="Your signature" 
+                          className="max-h-20 object-contain"
+                        />
+                      </div>
+                    )}
+                  </div>
+                )}
               </div>
             </div>
           </div>
