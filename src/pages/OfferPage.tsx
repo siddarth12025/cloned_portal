@@ -1,11 +1,10 @@
-
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { motion } from "framer-motion";
 import Logo from "@/components/Logo";
-import offerContent from "@/data/offerContent";
+import { getEmployee } from "@/lib/db";
 import OfferContent from "@/components/OfferContent";
 import SignatureSection from "@/components/SignatureSection";
 import OfferActions from "@/components/OfferActions";
@@ -18,6 +17,7 @@ const OfferPage = () => {
   const [generatingPdf, setGeneratingPdf] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(true);
   const [signatureImage, setSignatureImage] = useState<string | null>(null);
+  const [employeeData, setEmployeeData] = useState<any>(null);
   const navigate = useNavigate();
 
   // Check if user is authenticated
@@ -32,6 +32,27 @@ const OfferPage = () => {
 
   const employeeId = localStorage.getItem("employeeId") || sessionStorage.getItem("employeeId") || "Guest";
 
+  // Fetch employee data and generate dynamic offer content
+  useEffect(() => {
+    const fetchEmployeeData = async () => {
+      try {
+        const data = await getEmployee(employeeId);
+        if (!data) {
+          toast.error("Employee data not found");
+          navigate("/");
+          return;
+        }
+        setEmployeeData(data);
+      } catch (error) {
+        console.error("Error fetching employee data:", error);
+        toast.error("Failed to fetch employee data");
+        navigate("/");
+      }
+    };
+
+    fetchEmployeeData();
+  }, [employeeId, navigate]);
+
   const handleAcceptOffer = () => {
     if (!agreeToTerms) {
       toast.error("Please agree to the terms and conditions first");
@@ -39,6 +60,7 @@ const OfferPage = () => {
     }
     setOfferAccepted(true);
     toast.success("Offer accepted");
+    navigate("/offer-accepted");
   };
 
   const handleDownloadPdf = () => {
@@ -51,7 +73,7 @@ const OfferPage = () => {
     
     generateOfferLetterPdf({
       employeeId,
-      offerContent,
+      offerContent: employeeData,
       signatureImage,
       agreeToTerms
     })
@@ -99,10 +121,27 @@ const OfferPage = () => {
           <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden w-full lg:w-4/5">
             <div className="p-8">
               {/* Offer content component */}
-              <OfferContent 
-                offerContent={offerContent}
-                employeeId={employeeId}
-              />
+              {employeeData && (
+                <OfferContent 
+                  offerContent={[
+                    `Dear ${employeeData.name},`,
+                    "We are pleased to extend this offer of employment for the position of Software Engineer at Genpact. This letter confirms the details of our offer as discussed during your interview process.",
+                    `Position: ${employeeData.position}`,
+                    `Start Date: ${employeeData.startDate}`,
+                    `Location: ${employeeData.location}`,
+                    `Salary: ₹${employeeData.salary.toLocaleString()} per annum`,
+                    `Benefits: ${employeeData.benefits}`,
+                    "Reporting To: Jane Smith, Engineering Manager",
+                    "This offer is contingent upon the successful completion of a background check and your ability to provide documentation proving your eligibility to work in India.",
+                    "We are excited about the prospect of you joining our team and contributing to Genpact's success. Your skills and experience will be valuable assets to our organization, and we look forward to working with you.",
+                    "To accept this offer, please sign below and return this letter by December 1, 2023. If you have any questions or require clarification on any aspect of this offer, please do not hesitate to contact our HR department.",
+                    "Sincerely,",
+                    "John Doe",
+                    "Head of Human Resources, Genpact"
+                  ]}
+                  employeeId={employeeId}
+                />
+              )}
               
               <div className="border-t border-gray-200 pt-6 mt-8">
                 <h2 className="text-xl font-medium text-gray-900 mb-4">Accept Your Offer</h2>

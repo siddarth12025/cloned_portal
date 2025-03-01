@@ -1,5 +1,5 @@
-
 import { useState } from "react";
+import { getEmployee } from "@/lib/db";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -24,22 +24,34 @@ const Index = () => {
     
     setIsLoading(true);
     
-    // Simulate authentication delay
-    setTimeout(() => {
-      setIsLoading(false);
-      
-      // Always store the employeeId (either in localStorage or sessionStorage)
-      if (keepSignedIn) {
-        // For persistent login across browser sessions
-        localStorage.setItem("employeeId", employeeId);
-      } else {
-        // For temporary login (cleared when browser is closed)
-        sessionStorage.setItem("employeeId", employeeId);
+    (async () => {
+      try {
+        const employee = await getEmployee(employeeId);
+        if (!employee) {
+          toast.error("Employee ID not found. Please check and try again.");
+          setIsLoading(false);
+          return;
+        }
+
+        setIsLoading(false);
+
+        // Always store the employeeId (either in localStorage or sessionStorage)
+        if (keepSignedIn) {
+          // For persistent login across browser sessions
+          localStorage.setItem("employeeId", employeeId);
+        } else {
+          // For temporary login (cleared when browser is closed)
+          sessionStorage.setItem("employeeId", employeeId);
+        }
+
+        navigate("/offer");
+        toast.success("Successfully logged in");
+      } catch (error) {
+        console.error("Error checking employee ID:", error);
+        toast.error("An error occurred. Please try again.");
+        setIsLoading(false);
       }
-      
-      navigate("/offer");
-      toast.success("Successfully logged in");
-    }, 1000);
+    })();
   };
 
   return (
