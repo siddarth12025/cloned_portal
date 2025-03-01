@@ -2,7 +2,6 @@ import html2pdf from "html2pdf.js";
 
 interface PdfGenerationOptions {
   employeeId: string;
-  offerContent: string[];
   signatureImage: string | null;
   agreeToTerms: boolean;
 }
@@ -31,38 +30,9 @@ export const generateOfferLetterPdf = (options: PdfGenerationOptions): Promise<v
       return;
     }
 
-    // Fetch employee data from the database
-    let employeeData;
-    try {
-      const { getEmployee } = await import("@/lib/db");
-      employeeData = await getEmployee(employeeId);
-      if (!employeeData) {
-        reject(new Error("Cannot generate PDF: Employee data not found"));
-        return;
-      }
-    } catch (error) {
-      console.error("Error fetching employee data:", error);
-      reject(new Error("Cannot generate PDF: Failed to fetch employee data"));
-      return;
-    }
-
-    // Generate dynamic offer content
-    const offerContent = [
-      `Dear ${employeeData.name},`,
-      "We are pleased to extend this offer of employment for the position of Software Engineer at Genpact. This letter confirms the details of our offer as discussed during your interview process.",
-      `Position: ${employeeData.position}`,
-      `Start Date: ${employeeData.startDate}`,
-      `Location: ${employeeData.location}`,
-      `Salary: ₹${employeeData.salary.toLocaleString()} per annum`,
-      `Benefits: ${employeeData.benefits}`,
-      "Reporting To: Jane Smith, Engineering Manager",
-      "This offer is contingent upon the successful completion of a background check and your ability to provide documentation proving your eligibility to work in India.",
-      "We are excited about the prospect of you joining our team and contributing to Genpact's success. Your skills and experience will be valuable assets to our organization, and we look forward to working with you.",
-      "To accept this offer, please sign below and return this letter by December 1, 2023. If you have any questions or require clarification on any aspect of this offer, please do not hesitate to contact our HR department.",
-      "Sincerely,",
-      "John Doe",
-      "Head of Human Resources, Genpact"
-    ];
+    // Generate dynamic offer content using the helper function
+    const { default: generateOfferContent } = await import("@/data/offerContent");
+    const offerContent = generateOfferContent(employeeData);
 
     // Create a clean clone for PDF generation without UI elements
     const element = document.createElement('div');

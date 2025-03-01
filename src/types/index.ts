@@ -30,10 +30,3 @@ export interface AdminCredentials {
 }
 
 export type OfferContentGenerator = (employee: Employee) => string[];
-
-export interface AdminCredentials {
-  username: string;
-  password: string;
-}
-
-export type OfferContentGenerator = (employee: Employee) => string[];
