@@ -20,6 +20,7 @@ Before deploying, ensure you have the following:
 2. **Domain**: A domain name configured in your Hostinger account (optional if using a subdomain).
 3. **Node.js and npm**: Installed locally to build the project.
 4. **FTP Client**: (e.g., FileZilla) or access to the Hostinger File Manager.
+5. **Environment Variables**: Ensure all required environment variables are set up in the Hostinger dashboard under **Advanced > Environment Variables**.
 
 ---
 
@@ -36,7 +37,16 @@ Before deploying, ensure you have the following:
    npm install
    ```
 
-3. Build the project for production:
+3. Verify the `vite.config.ts` file:
+   - Ensure the `base` property is set correctly for your deployment. For example:
+     ```javascript
+     export default defineConfig({
+       base: "/",
+       plugins: [react()],
+     });
+     ```
+
+4. Build the project for production:
    ```bash
    npm run build
    ```
