@@ -4,11 +4,11 @@ import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { motion } from "framer-motion";
 import Logo from "@/components/Logo";
-import component{ getEmployee } from "@/lib/db";
+import { getEmployee } from "@/lib/db";
+import OfferContent from "@/components/OfferContent";
 import SignatureSection from "@/components/SignatureSection";
 import OfferActions from "@/components/OfferActions";
 import { generateOfferLetterPdf } from "@/utils/pdfGenerator";
-import { getEmployee } from "@/lib/db";
 
 const OfferPage = () => {
   const [signatureComplete, setSignatureComplete] = useState(false);
@@ -17,7 +17,6 @@ const OfferPage = () => {
   const [generatingPdf, setGeneratingPdf] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(true);
   const [signatureImage, setSignatureImage] = useState<string | null>(null);
-  const [employeeData, setEmployeeData] = useState<any>(null);
   const [employeeData, setEmployeeData] = useState<any>(null);
   const navigate = useNavigate();
 
@@ -54,27 +53,6 @@ const OfferPage = () => {
     fetchEmployeeData();
   }, [employeeId, navigate]);
 
-  // Fetch employee data and generate dynamic offer content
-  useEffect(() => {
-    const fetchEmployeeData = async () => {
-      try {
-        const data = await getEmployee(employeeId);
-        if (!data) {
-          toast.error("Employee data not found");
-          navigate("/");
-          return;
-        }
-        setEmployeeData(data);
-      } catch (error) {
-        console.error("Error fetching employee data:", error);
-        toast.error("Failed to fetch employee data");
-        navigate("/");
-      }
-    };
-
-    fetchEmployeeData();
-  }, [employeeId, navigate]);
-
   const handleAcceptOffer = () => {
     if (!agreeToTerms) {
       toast.error("Please agree to the terms and conditions first");
@@ -82,7 +60,6 @@ const OfferPage = () => {
     }
     setOfferAccepted(true);
     toast.success("Offer accepted");
-    navigate("/offer-accepted");
     navigate("/offer-accepted");
   };
 
@@ -96,7 +73,7 @@ const OfferPage = () => {
     
     generateOfferLetterPdf({
       employeeId,
-      offerContent,
+      offerContent: employeeData,
       signatureImage,
       agreeToTerms
     })

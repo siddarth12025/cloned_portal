@@ -4,6 +4,14 @@ This document provides step-by-step instructions to deploy the Offer Portal appl
 
 ---
 
+## Step 7: Verify Mobile Compatibility
+
+1. Open your application on a mobile device or use a browser's developer tools to simulate a mobile viewport.
+2. Ensure that the layout and functionality are responsive and work as expected.
+3. Address any issues with responsiveness or usability before considering the deployment complete.
+
+---
+
 ## Prerequisites
 
 Before deploying, ensure you have the following:
@@ -33,7 +41,7 @@ Before deploying, ensure you have the following:
    npm run build
    ```
 
-   This will generate a `dist` folder containing the production-ready files.
+   This will generate a `dist` folder containing the production-ready files. Ensure that the `dist` folder includes all necessary files such as `index.html`, `assets`, and other static resources before proceeding to the next step.
 
 ---
 
@@ -89,6 +97,8 @@ If deploying to a custom domain:
 3. If you encounter any issues:
    - Check the **Error Logs** in the Hostinger dashboard.
    - Ensure all files were uploaded correctly.
+   - Verify that the `dist` folder was built correctly and contains all required files.
+   - Check your browser's developer console for errors and ensure all assets are loading properly.
 
 ---
 

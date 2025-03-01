@@ -31,6 +31,21 @@ export const generateOfferLetterPdf = (options: PdfGenerationOptions): Promise<v
       return;
     }
 
+    // Fetch employee data from the database
+    let employeeData;
+    try {
+      const { getEmployee } = await import("@/lib/db");
+      employeeData = await getEmployee(employeeId);
+      if (!employeeData) {
+        reject(new Error("Cannot generate PDF: Employee data not found"));
+        return;
+      }
+    } catch (error) {
+      console.error("Error fetching employee data:", error);
+      reject(new Error("Cannot generate PDF: Failed to fetch employee data"));
+      return;
+    }
+
     // Generate dynamic offer content
     const offerContent = [
       `Dear ${employeeData.name},`,
