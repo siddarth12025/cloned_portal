@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -7,6 +6,9 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
 import OfferPage from "./pages/OfferPage";
 import NotFound from "./pages/NotFound";
+import AdminLogin from "./pages/AdminLogin";
+import AdminPanel from "./pages/AdminPanel";
+import OfferAccepted from "./pages/OfferAccepted";
 
 const queryClient = new QueryClient();
 
@@ -19,7 +21,9 @@ const App = () => (
         <Routes>
           <Route path="/" element={<Index />} />
           <Route path="/offer" element={<OfferPage />} />
-          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+          <Route path="/admin-login" element={<AdminLogin />} />
+          <Route path="/admin-panel" element={<AdminPanel />} />
+          <Route path="/offer-accepted" element={<OfferAccepted />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
