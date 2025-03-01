@@ -16,6 +16,7 @@ const OfferPage = () => {
   const [agreeToTerms, setAgreeToTerms] = useState(false);
   const [generatingPdf, setGeneratingPdf] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(true);
+  const [signatureImage, setSignatureImage] = useState<string | null>(null);
   const canvasRef = useRef<any>(null);
   const offerContentRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
@@ -43,12 +44,24 @@ const OfferPage = () => {
 
   const handleSignature = (isComplete: boolean) => {
     setSignatureComplete(isComplete);
+    // When signature is complete, save the signature image
+    if (isComplete && canvasRef.current) {
+      try {
+        const dataURL = canvasRef.current.toDataURL();
+        setSignatureImage(dataURL);
+        console.log("Signature saved successfully");
+      } catch (error) {
+        console.error("Error saving signature:", error);
+        toast.error("Could not save signature. Please try again.");
+      }
+    }
   };
 
   const handleClearSignature = () => {
     if (canvasRef.current) {
       canvasRef.current.clear();
       setSignatureComplete(false);
+      setSignatureImage(null);
     }
   };
 
@@ -65,12 +78,11 @@ const OfferPage = () => {
 
     setGeneratingPdf(true);
     
-    // Clone the content to avoid modifying the actual DOM
+    // Create a deep clone of the content to avoid modifying the actual DOM
     const element = offerContentRef.current.cloneNode(true) as HTMLElement;
     
     // Add the signature if available
-    if (canvasRef.current) {
-      const signatureImage = canvasRef.current.toDataURL();
+    if (signatureImage) {
       const signatureDiv = document.createElement('div');
       signatureDiv.style.marginTop = '20px';
       signatureDiv.innerHTML = `
@@ -90,14 +102,19 @@ const OfferPage = () => {
     };
 
     // Generate PDF
-    html2pdf().from(element).set(options).save().then(() => {
-      setGeneratingPdf(false);
-      toast.success("Offer letter downloaded successfully");
-    }).catch((error) => {
-      console.error("PDF generation error:", error);
-      setGeneratingPdf(false);
-      toast.error("Failed to generate PDF. Please try again.");
-    });
+    html2pdf()
+      .set(options)
+      .from(element)
+      .save()
+      .then(() => {
+        setGeneratingPdf(false);
+        toast.success("Offer letter downloaded successfully");
+      })
+      .catch((error) => {
+        console.error("PDF generation error:", error);
+        setGeneratingPdf(false);
+        toast.error("Failed to generate PDF. Please try again.");
+      });
   };
 
   const handleLogout = () => {
